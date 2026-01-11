@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 // APIs FIRST
 app.use("/productstore", productRouter);
 
-if (process.env.NODE_ENV="production"){
+if (process.env.NODE_ENV==="production"){
     const buildPath = path.resolve("frontend","dist")
     app.use(express.static(buildPath))
     app.use((req,res)=>{
@@ -23,7 +23,18 @@ if (process.env.NODE_ENV="production"){
 }
 
 
-app.listen(PORT, async () => {
-  await connectDb();
-  console.log(`Server started at http://localhost:${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await connectDb();
+    console.log("MongoDb connected successfully");
+
+    app.listen(PORT, () => {
+      console.log(`Server started at http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error("MongoDB connection failed ❌", error);
+    process.exit(1);
+  }
+};
+
+startServer();
