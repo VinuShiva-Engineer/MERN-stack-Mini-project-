@@ -11,7 +11,17 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 
+// APIs FIRST
 app.use("/productstore", productRouter);
+
+if (process.env.NODE_ENV="production"){
+    const buildPath = path.resolve("frontend","dist")
+    app.use(express.static(buildPath))
+    app.use((req,res)=>{
+        res.sendFile(path.join(buildPath,"index.html"))
+    })
+}
+
 
 app.listen(PORT, async () => {
   await connectDb();
